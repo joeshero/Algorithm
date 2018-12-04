@@ -4,8 +4,9 @@
 
 # 剑指offer
 
-- [1.二维数组的查找](#1.-二维数组的查找)
-- [2.替换空格](#2.-替换空格)
+- [1.二维数组的查找](#1-二维数组的查找)
+- [2.替换空格](#2-替换空格)
+- [3.从尾到头打印链表](#3-从尾到头打印链表)
 
 ## 1. 二维数组的查找
 
@@ -15,6 +16,7 @@
 
 ```java
 //思路：从右上角开始找
+
 //时间复杂度 O(M+N)+O(1)
 public boolean Find(int target, int [][] array) {
     if (array == null || array.length == 0 || array[0].length == 0) {
@@ -41,3 +43,43 @@ public boolean Find(int target, int [][] array) {
 
 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
 
+```java
+//思路：利用StringBuilder，遍历str，遇到空格进行替换
+public String replaceSpace(StringBuffer str) {
+    if (str == null || str.length() == 0) {
+        return str.toString();
+    }
+    int len = 0;
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i = 0; i < str.length(); i++) {
+        if (str.charAt(i) == ' ') {
+            stringBuilder.append("%20");
+            continue;
+        }
+        stringBuilder.append(str.charAt(i));
+    }
+
+    return stringBuilder.toString();
+
+}
+```
+
+# 3. 从尾到头打印链表
+
+**题目描述**
+
+输入一个链表，按链表值从尾到头的顺序返回一个ArrayList。
+
+```java
+//思路1：利用递归
+//思路二：遍历listNode保存在栈中
+public ArrayList<Integer> printListFromTailToHead(ListNode listNode) {
+    if (listNode == null) {
+        return new ArrayList<>();
+    }
+    ArrayList<Integer> vals = new ArrayList<>();
+    vals.addAll(printListFromTailToHead(listNode.next));
+    vals.add(listNode.val);
+    return vals;
+}
+```
