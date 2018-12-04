@@ -1,2 +1,1 @@
-# Algorithm
-算法代码
+<center>Algoritm</center>
