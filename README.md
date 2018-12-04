@@ -7,6 +7,7 @@
 - [1.二维数组的查找](#1-二维数组的查找)
 - [2.替换空格](#2-替换空格)
 - [3.从尾到头打印链表](#3-从尾到头打印链表)
+- [4.重建二叉树](#4-重建二叉树)
 
 ## 1. 二维数组的查找
 
@@ -37,7 +38,7 @@ public boolean Find(int target, int [][] array) {
 }
 ```
 
-# 2. 替换空格
+## 2. 替换空格
 
 **题目描述**
 
@@ -64,15 +65,16 @@ public String replaceSpace(StringBuffer str) {
 }
 ```
 
-# 3. 从尾到头打印链表
+## 3. 从尾到头打印链表
 
 **题目描述**
 
 输入一个链表，按链表值从尾到头的顺序返回一个ArrayList。
 
 ```java
-//思路1：利用递归
+//思路一：利用递归
 //思路二：遍历listNode保存在栈中
+//思路三：头插法
 public ArrayList<Integer> printListFromTailToHead(ListNode listNode) {
     if (listNode == null) {
         return new ArrayList<>();
@@ -83,3 +85,9 @@ public ArrayList<Integer> printListFromTailToHead(ListNode listNode) {
     return vals;
 }
 ```
+
+## 4. 重建二叉树
+
+## 题目描述
+
+输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
