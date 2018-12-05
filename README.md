@@ -2,6 +2,8 @@
 
 [剑指offer](#剑指offer)
 
+[Leetcode](#Leetcode)
+
 # 剑指offer
 
 - [1.二维数组的查找](#1-二维数组的查找)
@@ -340,3 +342,27 @@ public int NumberOf1(int n) {
     return count;
 }
 ```
+
+# Leetcode
+
+- [1.两数之和](#1-两数之和)
+
+## 1. 两数之和
+
+```java
+//思路：利用HashMap
+public int[] twoSum(int[] nums, int target) {
+    HashMap<Integer, Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int a = target - nums[i];
+        if (map.containsKey(a)) {
+            return new int[]{i, map.get(a)};
+        }
+        map.put(nums[i], i);
+
+
+    }
+    return new int[]{};
+}
+```
+
