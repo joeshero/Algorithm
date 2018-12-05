@@ -349,6 +349,8 @@ public int NumberOf1(int n) {
 
 ## 1. 两数之和
 
+[two sum](https://leetcode-cn.com/problems/add-two-numbers/)
+
 ```java
 //思路：利用HashMap
 public int[] twoSum(int[] nums, int target) {
