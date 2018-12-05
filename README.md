@@ -10,6 +10,11 @@
 - [4.重建二叉树](#4-重建二叉树)
 - [5.用两个栈实现队列](#5-用两个栈实现队列)
 - [6.旋转数组的最小值](#6-旋转数组的最小值)
+- [7.斐波那契数列](#7-斐波那契数列)
+- [8.跳台阶](#8-跳台阶)
+- [9.变态跳台阶](#9-变态跳台阶)
+- [10.矩形覆盖](#10-矩形覆盖)
+- [11.二进制中1的个数](#11-二进制中一的个数)
 
 ## 1. 二维数组的查找
 
@@ -189,6 +194,150 @@ private int search(int[] arr) {
         min = Math.min(min, arr[i]);
     }
     return min;
+}
+```
+
+## 7. 斐波那契数列
+
+**题目描述**
+
+大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0）。 
+
+  n<=39 
+
+```java
+//思路：采用非递归形式
+public int Fibonacci(int n) {
+    if (n < 0) {
+        return -1;
+    }
+    if (n == 0 || n == 1) {
+        return n;
+    }
+    int first = 0;
+    int next = 1;
+    for (int i = 2; i <= n; i++) {
+        next += first;
+        first = next - first;
+    }
+    return next;
+}
+```
+
+## 8. 跳台阶
+
+**题目描述**
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
+
+```java
+//思路：斐波那契数列，动态规划
+public int JumpFloor(int target) {
+    if (target <= 0) {
+        return -1;
+    }
+    if (target == 1 || target == 2) {
+        return target;
+    }
+    int first = 1;
+    int second = 2;
+    for (int i = 3; i <= target; i++) {
+        second += first;
+        first = second - first;
+    }
+    return second;
+}
+```
+
+## 9. 变态跳台阶
+
+**题目描述**
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+
+```java
+//思路：动态规划
+public int JumpFloorII(int target) {
+    if (target <= 0) {
+        return -1;
+    }
+    if (target == 1 || target == 2) {
+        return target;
+    }
+    int[] dp = new int[target + 1];
+    dp[0] = 0;
+    dp[1] = 1;
+    dp[2] = 2;
+    for (int i = 3; i <= target; i++) {
+        dp[i] = merge(dp, i - 1) + 1;
+    }
+    return dp[target];
+
+}
+//累加前n-1项
+private int merge(int[] arr, int end) {
+    int sum = 0;
+    for (int i = 0; i <= end; i++) {
+        sum += arr[i];
+    }
+    return sum;
+}
+```
+
+## 10. 矩形覆盖
+
+**题目描述**
+
+我们可以用2 * 1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2 * 1的小矩形无重叠地覆盖一个2 * n的大矩形，总共有多少种方法？
+
+```java
+//思路：类似斐波那契数列
+public int RectCover(int target) {
+    if (target <= 0) {
+        return 0;
+    }
+    if (target == 1 || target == 2) {
+        return target;
+    }
+    int first = 1;
+    int next = 2;
+    for (int i = 3; i <= target; i++) {
+        next += first;
+        first = next - first;
+    }
+    return next;
+}
+```
+
+## 11. 二进制中1的个数
+
+```java
+//方法一：位运算，每次判断n最后一位是否为1，再无符号右移一位计算
+public int NumberOf1(int n) {
+
+    int count = 0;
+
+    while (n != 0) {
+        if ((n & 1) == 1) {
+            count++;
+        }
+        n >>= 1;
+    }
+    return count;
+}
+```
+
+```Java
+//方法二：位运算，当n不为0时，将n最后一位1置0（n&(n-1)），再次运算
+public int NumberOf1(int n) {
+
+    int count = 0;
+
+    while (n != 0) {
+        count++;
+        n = n & (n - 1);
+    }
+    return count;
 }
 ```
 
