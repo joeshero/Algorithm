@@ -17,6 +17,11 @@
 - [9.变态跳台阶](#9-变态跳台阶)
 - [10.矩形覆盖](#10-矩形覆盖)
 - [11.二进制中1的个数](#11-二进制中1的个数)
+- [12.数值的整数次方](#12-数值的整数次方)
+- [13.调整数组顺序使奇数位于偶数前面](#13-调整数组顺序使奇数位于偶数前面)
+- [14.链表中倒数第k个结点](#14-链表中倒数第k个结点)
+- [15.反转链表](#15-反转链表)
+- [16.合并两个排序的列表](#16-合并两个排序的列表)
 
 ## 1. 二维数组的查找
 
@@ -343,6 +348,181 @@ public int NumberOf1(int n) {
 }
 ```
 
+## 12. 数值的整数次方
+
+**题目描述**
+
+给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。
+
+```java
+//注意特殊情况，运算时采用位运算
+public double Power(double base, int exponent) {
+    //指数为0或负数时base不能为0
+    if (base == 0 && exponent <= 0) {
+        throw new IllegalArgumentException();
+    }
+    //处理指数为0情况
+    if (exponent == 0) {
+        return 1;
+    }
+    //判断指数正负
+    boolean tag = (exponent > 0) ;
+    //将指数变为正数计算
+    exponent = exponent > 0 ? exponent : -exponent;
+    //利用位运算
+    double pow = 1;
+    while (exponent != 0) {
+        if ((exponent & 1) == 1) {
+            pow *= base;
+        }
+        base *= base;
+        exponent >>= 1;
+    }
+    return tag ? pow : 1 / pow;
+}
+```
+
+## 13. 调整数组顺序使奇数位于偶数前面
+
+**题目描述**
+
+输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+
+```java
+//方法一：类似冒泡排序，每次循环交换相邻位置奇偶顺序
+public void reOrderArray(int [] array) {
+    if (array == null || array.length <= 1) {
+        return;
+    }
+    for (int i = 0; i < array.length; i++) {
+        for (int j = array.length - 1; j > i; j--) {
+            if (array[j] % 2 == 1 && array[j - 1] % 2 == 0) {
+                swap(array, j, j - 1);
+            }
+        }
+    }
+}
+
+private void swap(int[] arr, int i, int j) {
+    int tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+}
+```
+
+```java
+//方法二：利用辅助数组
+public void reOrderArray1(int [] array) {
+    if (array == null || array.length <= 1) {
+        return;
+    }
+    //统计奇数个数
+    int count = 0;
+    for (int num : array) {
+        if (num % 2 == 1) {
+            count++;
+        }
+    }
+    //构建辅助数组,浅拷贝
+    int[] help = array.clone();
+    //奇数指针
+    int i = 0;
+    //偶数指针
+    int j = count;
+    for (int num : help) {
+        if (num % 2 == 1) {
+            array[i++] = num;
+        }else {
+            array[j++] = num;
+        }
+    }
+
+}
+```
+
+## 14. 链表中倒数第k个结点
+
+**题目描述**
+
+输入一个链表，输出该链表中倒数第k个结点。
+
+```java
+//思路：利用两个指针，一个指针先走k步，再与另一个指针共同前进，当快指针指向null，慢指针即指向倒数第k个结点
+public ListNode FindKthToTail(ListNode head,int k) {
+    //处理特值
+    if (k <= 0) {
+        return null;
+    }
+    //让快指针先走k步，如果提前到达null，说明链表长度小于k，返回null
+    ListNode fast = head;
+    while (k-- > 0) {
+        if (fast == null) {
+            return null;
+        }
+        fast = fast.next;
+    }
+    ListNode low = head;
+    while (fast != null) {
+        low = low.next;
+        fast = fast.next;
+    }
+    return low;
+
+}
+```
+
+## 15. 反转链表
+
+**题目描述**
+
+输入一个链表，反转链表后，输出新链表的表头。
+
+```java
+//迭代，利用头插法
+public ListNode ReverseList(ListNode head) {
+    //处理特殊情况
+    if (head == null || head.next == null) {
+        return head;
+    }
+
+    //头插法
+    ListNode node = new ListNode(0);
+    while (head != null) {
+        ListNode p = head.next;
+        head.next = node.next;
+        node.next = head;
+        head = p;
+    }
+    return node.next;
+
+}
+```
+
+```java
+//递归
+public ListNode ReverseList(ListNode head) {
+    //递归中止条件
+    if (head == null || head.next == null) {
+        return head;
+    }
+
+    ListNode node = ReverseList(head.next);
+    head.next.next = head;
+    head.next = null;
+    return node;
+}
+```
+
+## 16. 合并两个排序的列表
+
+s
+
+
+
+
+
+
+
 # Leetcode
 
 - [1.两数之和](#1-两数之和)
@@ -367,4 +547,3 @@ public int[] twoSum(int[] nums, int target) {
     return new int[]{};
 }
 ```
-
