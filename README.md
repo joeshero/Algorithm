@@ -23,6 +23,10 @@
 - [15.反转链表](#15-反转链表)
 - [16.合并两个排序的列表](#16-合并两个排序的列表)
 - [17.树的子结构](#17-树的子结构)
+- [18.二叉树的镜像](#18-二叉树的镜像)
+- [19.顺时针打印矩阵](#19-顺时针打印矩阵)
+- [20.包含min函数的栈](#20-包含min函数的栈)
+- [21.栈的压入，弹出序列](#21-栈的压入，弹出序列)
 
 ## 1. 二维数组的查找
 
@@ -595,11 +599,160 @@ public ListNode Merge(ListNode list1, ListNode list2) {
 
 输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
 
+```java
+//递归
+public boolean HasSubtree(TreeNode root1,TreeNode root2) {
+    boolean result = false;
+    //都不为空才能判断
+    if (root1 != null && root2 != null) {
+        //如果根节点相等，依次比较每个节点
+        if (root1.val == root2.val) {
+            result = isTree1HavaTree2(root1, root2);
+        }
+        //如果不匹配，在左子树匹配
+        if (!result) {
+            result = HasSubtree(root1.left, root2);
+        }
+        //如果不匹配，在右子树匹配
+        if (!result) {
+            result = HasSubtree(root1.right, root2);
+        }
+    }
+    return result;
+
+}
+
+private boolean isTree1HavaTree2(TreeNode node1, TreeNode node2) {
+    //如果tree2遍历完了说明每个节点都符合，返回true
+    //两个if顺序不能颠倒
+    if (node2 == null) {
+        return true;
+    }
+    //如果tree2没遍历完tree1遍历完了，说明不符合，返回false
+    if (node1 == null) {
+        return false;
+    }
+    //其中一个点没对上
+    if (node1.val != node2.val) {
+        return false;
+    }
+    return isTree1HavaTree2(node1.left, node2.left) && isTree1HavaTree2(node1.right, node2.right);
+}
+```
+
+## 18. 二叉树的镜像
+
+**题目描述**
+
+操作给定的二叉树，将其变换为源二叉树的镜像。
+
+**输入描述**:
+
+```
+二叉树的镜像定义：源二叉树 
+    	    8
+    	   /  \
+    	  6   10
+    	 / \  / \
+    	5  7 9 11
+    	镜像二叉树
+    	    8
+    	   /  \
+    	  10   6
+    	 / \  / \
+    	11 9 7  5
+```
+
+```java
+//自下而上递归
+public void Mirror1(TreeNode root) {
+    if (root == null) {
+        return;
+    }
+
+    Mirror1(root.left);
+    Mirror1(root.right);
+    swap(root);
+}
+
+public void swap(TreeNode node) {
+    if (node.left == null || node.right == null) {
+        return;
+    }
+    TreeNode p = node.left;
+    node.left = node.right;
+    node.right = p;
+}
+
+//自上而下递归
+public void Mirror(TreeNode root) {
+    if (root == null) {
+        return;
+    }
+    swap(root);
+    Mirror(root.left);
+    Mirror(root.right);
+}
+```
+
+## 19. 顺时针打印矩阵
+
+**题目描述**
+
+输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字，例如，如果输入如下4  X 4矩阵： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16  则依次打印出数字1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.
 
 
 
+## 20. 包含min函数的栈
+
+**题目描述**
+
+定义栈的数据结构，请在该类型中实现一个能够得到栈中所含最小元素的min函数（时间复杂度应为O（1））。
+
+```java
+//思路：利用一个辅助栈保存每次push时栈中最小元素，当小于栈顶元素时压入该元素，否则压入原来栈顶元素。pop操作时与主栈同步弹出。
+private static Stack<Integer> myStack = new Stack<>();
+private static Stack<Integer> minStack = new Stack<>();
 
 
+public void push(int node) {
+    myStack.push(node);
+    if (minStack.empty()) {
+        minStack.push(node);
+    }
+    minStack.push(minStack.peek() <= node ? minStack.peek() : node);
+}
+
+public void pop() {
+    if (!myStack.empty()) {
+        myStack.pop();
+        minStack.pop();
+    }
+}
+
+public int top() {
+    if (!myStack.empty()) {
+        return myStack.peek();
+    }
+
+    throw new IndexOutOfBoundsException();
+
+}
+
+public int min() {
+    if (!minStack.empty()) {
+        return minStack.peek();
+    }
+
+    throw new IndexOutOfBoundsException();
+}
+```
+
+## 20. 栈的压入，弹出序列
+
+**题目描述**
+
+输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否可能为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。（注意：这两个序列的长度是相等的）
 
 # Leetcode
 
