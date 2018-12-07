@@ -22,6 +22,7 @@
 - [14.链表中倒数第k个结点](#14-链表中倒数第k个结点)
 - [15.反转链表](#15-反转链表)
 - [16.合并两个排序的列表](#16-合并两个排序的列表)
+- [17.树的子结构](#17-树的子结构)
 
 ## 1. 二维数组的查找
 
@@ -318,6 +319,10 @@ public int RectCover(int target) {
 
 ## 11. 二进制中1的个数
 
+**题目描述**
+
+输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
+
 ```java
 //方法一：位运算，每次判断n最后一位是否为1，再无符号右移一位计算
 public int NumberOf1(int n) {
@@ -515,7 +520,80 @@ public ListNode ReverseList(ListNode head) {
 
 ## 16. 合并两个排序的列表
 
-s
+**题目描述**
+
+输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
+
+```java
+//方法一：递归
+public ListNode Merge(ListNode list1,ListNode list2) {
+    if (list1 == null && list2 == null) {
+        return null;
+    }
+    if (list1 == null) {
+        return list2;
+    }
+    if (list2 == null) {
+        return list1;
+    }
+
+    ListNode node = new ListNode(-1);
+    ListNode p = node;
+    if (list2.val >= list1.val) {
+        p.next = list1;
+        list1 = list1.next;
+    } else {
+        p.next = list2;
+        list2 = list2.next;
+    }
+    p = p.next;
+    p.next = Merge(list1, list2);
+    return node.next;
+    
+}
+```
+
+
+
+```java
+//方法二：迭代法
+public ListNode Merge(ListNode list1, ListNode list2) {
+    if (list1 == null && list2 == null) {
+        return null;
+    }
+    if (list1 == null) {
+        return list2;
+    }
+    if (list2 == null) {
+        return list1;
+    }
+    ListNode node = new ListNode(-1);
+    ListNode p = node;
+    while (list1 != null && list2 != null) {
+        if (list1.val >= list2.val) {
+            p.next = list2;
+            list2 = list2.next;
+        } else {
+            p.next = list1;
+            list1 = list1.next;
+        }
+        p = p.next;
+    }
+    if (list1 != null) {
+        p.next = list1;
+    }
+    if (list2 != null) {
+        p.next = list2;
+    }
+    return node.next;
+}
+```
+
+## 17. 树的子结构
+
+**题目描述**
+
+输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
 
 
 
