@@ -29,6 +29,11 @@
 - [21.栈的压入，弹出序列](#21-栈的压入，弹出序列)
 - [22.从上往下打印二叉树](#22-从上往下打印二叉树)
 - [23.二叉树的后序遍历序列](#23-二叉树的后序遍历序列)
+- [24.二叉树中和为某一值的路径](#24-二叉树中和为某一值的路径)
+- [25.复杂链表的复制](#25-复杂链表的复制)
+- [26.二叉搜索树与双向链表](#26-二叉搜索树与双向链表)
+- [27.字符串的排列](#27-字符串的排列 )
+- [28.数组中出现次数超过一半的数字](#28-数组中出现次数超过一半的数字)
 
 ## 1. 二维数组的查找
 
@@ -860,6 +865,266 @@ public ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
 **题目描述**
 
 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
+
+```java
+//非递归 
+//非递归也是一个基于递归的思想：
+//左子树一定比右子树小，因此去掉根后，数字分为left，right两部分，right部分的
+//最后一个数字是右子树的根他也比左子树所有值大，因此我们可以每次只看有子树是否符合条件
+//即可，即使到达了左子树左子树也可以看出由左右子树组成的树还想右子树那样处理
+ 
+//对于左子树回到了原问题，对于右子树，左子树的所有值都比右子树的根小可以暂时把他看出右子树的左子树
+//只需看看右子树的右子树是否符合要求即可
+public boolean VerifySquenceOfBST(int [] sequence) {
+    int size = sequence.length;
+    if (size == 0) {
+        return false;
+    }
+    int i = 0;
+    while (--size > 0) {
+        while (sequence[i] < sequence[size])i++;
+        while (sequence[i] > sequence[size])i++;
+        if (i < size) {
+            return false;
+        }
+        i = 0;
+    }
+    return true;
+}
+```
+
+## 24. 二叉树中和为某一值的路径
+
+**题目描述**
+
+输入一颗二叉树的跟节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
+
+```java
+package offer;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Joe
+ * 二叉树中和为某一值的路径
+ */
+public class Num24 {
+    public class TreeNode {
+        int val = 0;
+        TreeNode left = null;
+        TreeNode right = null;
+
+        public TreeNode(int val) {
+            this.val = val;
+        }
+    }
+
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
+        ArrayList<ArrayList<Integer>> paths = new ArrayList<>();
+        ArrayList<Integer> path = new ArrayList<>();
+        getPath(paths, path, root, target);
+        return paths;
+    }
+
+    private void getPath(ArrayList<ArrayList<Integer>> paths, ArrayList<Integer> path, TreeNode root, int target) {
+        if (root == null) {
+            return;
+        }
+        path.add(root.val);
+        target -= root.val;
+        if (target == 0 && root.left == null && root.right == null) {
+            paths.add(new ArrayList<>(path));
+        }
+        getPath(paths, path, root.left, target);
+        getPath(paths,path,root.right,target);
+        //每次遍历到叶子节点需要回退到父节点遍历其他节点
+        //此时要把叶子节点移除
+        path.remove(path.size() - 1);
+
+    }
+}
+```
+
+## 25. 复杂链表的复制
+
+**题目描述**
+
+输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
+
+```java
+//思路：节点复制，拷贝随机节点，再拆分
+public RandomListNode Clone(RandomListNode pHead) {
+    if (pHead == null) {
+        return null;
+    }
+    RandomListNode p = pHead;
+    //在每个节点后面复制节点
+    while (p != null) {
+        RandomListNode clone = new RandomListNode(p.label);
+        clone.next = p.next;
+        p.next = clone;
+        p = p.next.next;
+    }
+
+    //调整random指针
+    p = pHead;
+    while (p != null) {
+        RandomListNode node = p.next;
+        if (p.random != null) {
+            node.random = p.random.next;
+        }
+        p = p.next.next;
+    }
+
+    //拆分
+    //要返回的节点
+    RandomListNode newHead = pHead.next;
+    p = pHead;
+    while (p.next != null) {
+        RandomListNode cur = p.next;
+        p.next = cur.next;
+        p = cur;
+    }
+    return newHead;
+
+}
+```
+
+## 26. 二叉搜索树与双向链表
+
+**题目描述**
+
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+
+```java
+public TreeNode Convert(TreeNode pRootOfTree) {
+    if (pRootOfTree == null) {
+        return null;
+    }
+    
+    TreeNode p = pRootOfTree;
+    //要返回的节点
+    TreeNode root = null;
+    //保存当前节点之前节点
+    TreeNode pre = null;
+    boolean tag = true;
+    Stack<TreeNode> nodes = new Stack<>();
+    while (p != null || !nodes.empty()) {
+        //将当前节点及左子树放入栈中
+        while (p != null) {
+            nodes.push(p);
+            p = p.left;
+        }
+        p = nodes.pop();
+        //取出栈中元素进行操作
+        //此时该元素为栈中最小元素
+        if (tag) {
+            //第一次取出，该元素为链表头部
+            root = p;
+            //保存当前节点
+            pre = p;
+            tag = false;
+        }else{
+            p.left = pre;
+            pre.right = p;
+            pre = p;
+        }
+        p = p.right;
+    }
+
+    return root;
+}
+```
+
+## 27. 字符串的排列
+
+**题目描述**
+
+输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符
+
+串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。
+
+```java
+//思路：回溯法
+public ArrayList<String> Permutation(String str) {
+    if (str == null || str.length() == 0) {
+        return new ArrayList<>();
+    }
+    ArrayList<String> result = new ArrayList<>();
+    char[] ch = str.toCharArray();
+    find(ch, result, 0);
+    Collections.sort(result);
+    return result;
+}
+
+private void find(char[] ch, ArrayList<String> result, int i) {
+    //递归终止条件
+    if (i == ch.length - 1) {
+
+        if (!result.contains(new String(ch))) {
+            result.add(new String(ch));
+            return;
+        }
+    } else {
+
+        for (int j = i; j < ch.length; j++) {
+            swap(ch, i, j);
+            find(ch, result, i + 1);
+            swap(ch, i, j);
+        }
+
+
+    }
+}
+
+private void swap(char[] ch, int i, int j) {
+    if (i != j) {
+        char tmp = ch[i];
+        ch[i] = ch[j];
+        ch[j] = tmp;
+    }
+}
+```
+
+## 28. 数组中出现次数超过一半的数字
+
+**题目描述**
+
+数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
+
+```java
+//num保存当前数组中数字，count统计次数，遍历数组，后面数字与num相等count++，否则--,当count为0时num为当前数组数字。
+//这样会统计出当前数组中出现次数最多的数字。再次遍历数组验证其出现次数是否超过一半
+public int MoreThanHalfNum_Solution(int[] array) {
+    if (array == null || array.length == 0) {
+        return 0;
+    }
+
+    int num = array[0];
+    int count = 1;
+    for (int i = 1; i < array.length; i++) {
+        if (array[i] == num) {
+            count++;
+        } else {
+            count--;
+        }
+        if (count == 0) {
+            num = array[i];
+            count = 1;
+        }
+    }
+    count = 0;
+    for (int i = 0; i < array.length; i++) {
+        if (num == array[i]) {
+            count++;
+        }
+    }
+
+    return count > array.length / 2 ? num : 0;
+}
+```
+
+
 
 
 
