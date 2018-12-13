@@ -38,6 +38,8 @@
 - [30.连续子数组的最大和](#30-连续子数组的最大和)
 - [31.整数中1出现的次数](#31-整数中1出现的次数)
 - [32.把数组排成最小的数](#32-把数组排成最小的数)
+- [33.丑数](#33-丑数)
+- [34.第一次只出现一次的字符](#34-第一次只出现一次的字符)
 
 ## 1. 二维数组的查找
 
@@ -1254,7 +1256,44 @@ public String PrintMinNumber(int[] numbers) {
 }
 ```
 
- 
+ ## 33. 丑数
+
+**题目描述**
+
+把只包含质因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含质因子7。 习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
+
+```java
+public int GetUglyNumber_Solution(int index) {
+    if (index <= 0) {
+        return 0;
+    }
+    List<Integer> vals = new ArrayList<>();
+    int i1 = 0;
+    int i2 = 0;
+    int i3 = 0;
+    vals.add(1);
+    while (vals.size() < index) {
+        int m1 = vals.get(i1) * 2;
+        int m2 = vals.get(i2) * 3;
+        int m3 = vals.get(i3) * 5;
+        int min = Math.min(m1, Math.min(m2, m3));
+        vals.add(min);
+        if (m1 == min) i1++;
+        if (m2 == min) i2++;
+        if (m3 == min) i3++;
+    }
+
+    return vals.get(vals.size() - 1);
+}
+```
+
+## 34. 第一次只出现一次的字符
+
+**题目描述**
+
+在一个字符串(0<=字符串长度<=10000，全部由字母组成)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1（需要区分大小写）.
+
+
 
 
 
