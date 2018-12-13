@@ -34,6 +34,10 @@
 - [26.二叉搜索树与双向链表](#26-二叉搜索树与双向链表)
 - [27.字符串的排列](#27-字符串的排列 )
 - [28.数组中出现次数超过一半的数字](#28-数组中出现次数超过一半的数字)
+- [29.最小的k个数](#29-最小的k个数)
+- [30.连续子数组的最大和](#30-连续子数组的最大和)
+- [31.整数中1出现的次数](#31-整数中1出现的次数)
+- [32.把数组排成最小的数](#32-把数组排成最小的数)
 
 ## 1. 二维数组的查找
 
@@ -1121,6 +1125,134 @@ public int MoreThanHalfNum_Solution(int[] array) {
     }
 
     return count > array.length / 2 ? num : 0;
+}
+```
+
+## 29. 最小的k个数
+
+**题目描述**
+
+输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4,。
+
+```java
+//思路：冒泡排序只排序k次
+public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
+    if (input == null || input.length == 0 || k <= 0 || k > input.length) {
+        return new ArrayList<>();
+    }
+    List<Integer> vals = new ArrayList<>();
+    for (int i = 0; i < k; i++) {
+        for (int j = input.length - 1; j > i; j--) {
+            if (input[j] < input[j - 1]) {
+                swap(input, j, j - 1);
+            }
+        }
+        vals.add(input[i]);
+    }
+
+    return (ArrayList<Integer>) vals;
+
+}
+
+private void swap(int[] arr, int i, int j) {
+    if (i != j) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+}
+```
+
+## 30. 连续子数组的最大和
+
+**题目描述**
+
+HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和，你会不会被他忽悠住？(子向量的长度至少是1)
+
+```java
+//动态规划
+public int FindGreatestSumOfSubArray(int[] array) {
+
+    int[] dp = new int[array.length];
+    dp[0] = array[0];
+    int max = dp[0];
+    for (int i = 1; i < array.length; i++) {
+        dp[i] = Math.max(dp[i - 1] + array[i], array[i]);
+        max = Math.max(max, dp[i]);
+    }
+    return max;
+}
+```
+
+## 31. 整数中1出现的次数
+
+**题目描述**
+
+求出1 ~ 13的整数中1出现的次数,并算出100 ~ 1300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数（从1  到 n 中1出现的次数）。
+
+```java
+//统计每一位1的个数
+public int NumberOf1Between1AndN_Solution(int n) {
+
+    int count = 0;//个数
+    int i = 1;//当前位
+    int current = 0;//当前数字
+    int before = 0;//高位数字
+    int after = 0;//低位数字
+    while ((n / i) != 0) {
+        current = (n / i) % 10;
+        before = n / (i * 10);
+        after = n - (n / i) * i;
+        if (current == 0) {
+            //当前位为0，个数取决于高位 高位*位数
+            count += before * i;
+        } else if (current == 1) {
+            //当前位为1，个数取决于高位和低位 高位*位数+低位+1
+            count += before * i + after + 1;
+        } else {
+            //当前位为2-9，个数为（高位+1）*位数
+            count += (before + 1) * i;
+        }
+        i *= 10;
+    }
+    return count;
+}
+```
+
+## 32. 把数组排成最小的数
+
+**题目描述**
+
+输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+
+```java
+//自定义比较器
+public String PrintMinNumber(int[] numbers) {
+    if (numbers == null || numbers.length == 0) {
+        return "";
+    }
+
+    List<Integer> vals = new ArrayList<>();
+
+    for (int i = 0; i < numbers.length; i++) {
+        vals.add(numbers[i]);
+    }
+
+    Collections.sort(vals, new Comparator<Integer>() {
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            String str1 = String.valueOf(o1);
+            String str2 = String.valueOf(o2);
+            String s1 = str1 + str2;
+            String s2 = str2 + str1;
+            return s1.compareTo(s2);
+        }
+    });
+    StringBuilder str = new StringBuilder();
+    for (Integer val : vals) {
+        str.append(val);
+    }
+    return str.toString();
 }
 ```
 
