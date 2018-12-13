@@ -1239,15 +1239,13 @@ public String PrintMinNumber(int[] numbers) {
     }
 
     Collections.sort(vals, new Comparator<Integer>() {
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            String str1 = String.valueOf(o1);
-            String str2 = String.valueOf(o2);
-            String s1 = str1 + str2;
-            String s2 = str2 + str1;
-            return s1.compareTo(s2);
-        }
-    });
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                String s1 = o1 + "" + o2;
+                String s2 = o2 + "" + o1;
+                return s1.compareTo(s2);
+            }
+        });
     StringBuilder str = new StringBuilder();
     for (Integer val : vals) {
         str.append(val);
@@ -1256,7 +1254,7 @@ public String PrintMinNumber(int[] numbers) {
 }
 ```
 
-
+ 
 
 
 
@@ -1278,8 +1276,6 @@ public int[] twoSum(int[] nums, int target) {
             return new int[]{i, map.get(a)};
         }
         map.put(nums[i], i);
-
-
     }
     return new int[]{};
 }
