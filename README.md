@@ -2,8 +2,6 @@
 
 [剑指offer](#剑指offer)
 
-[Leetcode](#Leetcode)
-
 # 剑指offer
 
 - [1.二维数组的查找](#1-二维数组的查找)
@@ -40,6 +38,38 @@
 - [32.把数组排成最小的数](#32-把数组排成最小的数)
 - [33.丑数](#33-丑数)
 - [34.第一次只出现一次的字符](#34-第一次只出现一次的字符)
+- [35.数组中的逆序对](#35-数组中的逆序对)
+- [36.两个链表的第一个公共结点](#36-两个链表的第一个公共结点)
+- [37.数字在排序数组中出现的次数](#37-数字在排序数组中出现的次数)
+- [38.二叉树的深度](#38-二叉树的深度)
+- [39.平衡二叉树](#39-平衡二叉树)
+- [40.数组中只出现一次的数字](#40-数组中只出现一次的数字)
+- [41.和为S的连续正数序列](#41-和为S的连续正数序列)
+- [42.和为S的两个数字](#42-和为S的两个数字)
+- [43.左旋转字符串](#43-左旋转字符串)
+- [44.翻转单词顺序列](#44-翻转单词顺序列)
+- [45.扑克牌顺子](#45-扑克牌顺子)
+- [46.孩子们的游戏](#46-孩子们的游戏)
+- [47.求1+2+...+n](#47-求1+2+...+n)
+- [48.不用加减乘除做加法](#48-不用加减乘除做加法)
+- [49.把字符串转换为整数](#49-把字符串转换为整数)
+- [50.数组中重复的数字](#50-数组中重复的数字)
+- [51.构建乘积数组](#51-构建乘积数组)
+- [52.正则表达式匹配](#52-正则表达式匹配)
+- [53.表示数值的字符串](#53-表示数值的字符串)
+- [54.字符流中第一个不重复的字符](#54-字符流中 第一个不重复的字符)
+- [55.链表中环的入口结点](#55-链表中环的入口结点)
+- [56.删除链表中重复的结点](#56-删除链表中重复的结点)
+- [57.二叉树的下一个结点](#57-二叉树的下一个结点)
+- [58.对称的二叉树](#58-对称的二叉树)
+- [59.按之字形顺序打印二叉树](#59-按之字形顺序打印二叉树)
+- [60.把二叉树打印成多行](#60-把二叉树打印成多行)
+- [61.序列化二叉树](#61-序列化二叉树)
+- [62.二叉搜索数的第k个结点](#62-二叉搜索树的第k个结点)
+- [63.数据流中的中位数](#63-数据流中的中位数)
+- [64.滑动窗口的最大值](#64-滑动窗口的最大值)
+- [65.矩阵中的路径](#65-矩阵中的路径)
+- [66.机器人的运动范围](#66-机器人的运动范围)
 
 ## 1. 二维数组的查找
 
@@ -1293,30 +1323,216 @@ public int GetUglyNumber_Solution(int index) {
 
 在一个字符串(0<=字符串长度<=10000，全部由字母组成)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1（需要区分大小写）.
 
+```java
+//思路：利用LinkedHashMap保存字符的出现顺序，统计字符出现个数，之后遍历字符数组
+//map.get(ch[i] == 1) 则输出下标
+public int FirstNotRepeatingChar(String str) {
+        LinkedHashMap<Character, Integer> map = new LinkedHashMap<>();
+        char[] ch = str.toCharArray();
+        for(char c : ch){
+            if(!map.containsKey(c)){
+                map.put(c, 1);
+            }else {
+                map.put(c, map.get(c) + 1);
+            }
+        }
+        for(int i = 0; i < ch.length; i++){
+            if(map.get(ch[i])== 1){
+                return i;
+            }
+        }
+        return -1;
+    }
+```
 
 
 
+## 35. 数组中的逆序对
 
-# Leetcode
+**题目描述**
 
-- [1.两数之和](#1-两数之和)
-
-## 1. 两数之和
-
-[two sum](https://leetcode-cn.com/problems/add-two-numbers/)
+在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。并将P对1000000007取模的结果输出。 	即输出P%1000000007
 
 ```java
-//思路：利用HashMap
-public int[] twoSum(int[] nums, int target) {
-    HashMap<Integer, Integer> map = new HashMap<>();
-    for (int i = 0; i < nums.length; i++) {
-        int a = target - nums[i];
-        if (map.containsKey(a)) {
-            return new int[]{i, map.get(a)};
+//思路：利用归并排序中的合并过程统计
+public class Solution {
+
+   private int count = 0;
+    public int InversePairs(int [] array) {
+        if(array == null || array.length < 2){
+            return 0;
         }
-        map.put(nums[i], i);
+        int[] help = new int[array.length];
+        merge(array, help, 0, array.length - 1);
+        return count;
     }
-    return new int[]{};
+
+    private void merge(int[] nums, int[] help, int lo, int hi){
+        if(lo >= hi){
+            return;
+        }
+        int mid = lo + (hi - lo) / 2;
+        merge(nums, help, lo, mid);
+        merge(nums, help, mid + 1, hi);
+        sort(nums, help, mid, lo, hi);
+    }
+
+    private void sort(int[] nums, int[] help, int mid, int lo, int hi){
+        for(int i = lo; i <= hi; i++){
+            help[i] = nums[i];
+        }
+        //左数组最右
+        int m = mid;
+        //右数组最右
+        int k = hi;
+        //nums下标
+        int j = hi;
+        while(m >= lo || k >= mid + 1){
+            if(m < lo){
+                nums[j--] = help[k--];
+            }else if(k <= mid){
+                nums[j--] = help[m--];
+            }else if(help[m] > help[k]){
+                nums[j--] = help[m--];
+                count += k - mid;
+                count%=1000000007;
+            }else {
+                nums[j--] = help[k--];
+
+            }
+        }
+    }
+
 }
+```
+
+## 36. 两个链表的第一个公共结点
+
+**题目描述**
+
+输入两个链表，找出它们的第一个公共结点。
+
+```java
+//思路：p1到null指向p2，p2到null指向p1
+public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+        ListNode p1 = pHead1;
+        ListNode p2 = pHead2;
+        while(p1 != p2){
+            p1 = (p1 == null ? pHead2 : p1.next);
+            p2 = (p2 == null ? pHead1 : p2.next);
+        }
+        return p1;
+    }
+```
+
+## 37. 数字在排序数组中出现的次数
+
+**题目描述**
+
+统计一个数字在排序数组中出现的次数。
+
+```java
+//思路:两次二分法找k+0.5，k-0.5
+public int GetNumberOfK(int [] array , int k) {
+        if(array == null || array.length < 1){
+            return 0;
+        }
+        int start = getIndex(array, k - 0.5);
+        int end = getIndex(array, k + 0.5);
+        return end - start;
+    }
+    
+    private int getIndex(int[] arr,double k){
+        if(arr == null || arr.length < 1){
+            return -1;
+        }
+        int lo = 0;
+        int hi = arr.length - 1;
+        while(lo <= hi){
+            int mid = lo + (hi - lo) / 2;
+            if(arr[mid] < k){
+                lo = mid + 1;
+            }else if(arr[mid] > k){
+                hi = mid - 1;
+            }
+        }
+        return lo;
+        
+    }
+```
+
+## 38. 二叉树的深度
+
+**题目描述**
+
+输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+
+```java
+public class Solution {
+    public int TreeDepth(TreeNode root) {
+        return root == null ? 0 : Math.max(TreeDepth(root.left), TreeDepth(root.right)) + 1;
+    }
+}
+```
+
+## 39. 平衡二叉树
+
+**题目描述**
+
+输入一棵二叉树，判断该二叉树是否是平衡二叉树。
+
+```java
+//思路：只要子树不平衡，就一路返回-1，避免重复计算
+public boolean IsBalanced_Solution(TreeNode root) {
+        return getDepth(root) != -1;
+    }
+
+    private int getDepth(TreeNode node) {
+        if (node == null) return 0;
+        int left = getDepth(node.left);
+        if (left == -1) return -1;
+        int right = getDepth(node.right);
+        if (right == -1) return -1;
+        return Math.abs(left - right) > 1 ? -1 : Math.max(left, right) + 1;
+    }
+```
+
+## 40. 数组中只出现一次的数字
+
+**题目描述**
+
+一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字。
+
+```java
+public void FindNumsAppearOnce(int[] array, int num1[], int num2[]) {
+        if (array == null || array.length <= 1) {
+            num1[0] = num2[0] = 0;
+            return;
+        }
+        //第一步，全部异或得到两个不同数异或结果
+        int num = 0;
+        for (int i = 0; i < array.length; i++) {
+            num ^= array[i];
+        }
+        //第二步，找到num中第一个1将数组分为两个部分，每个部分包含不同数
+        int i = 0;
+        for (; i < 32; i++) {
+            if ((num & (1 << i)) != 0) {
+                break;
+            }
+        }
+        //第三步，分别计算每一部分不同的数字
+        int cn1 = 0;
+        int cn2 = 0;
+        for (int arr : array) {
+            if ((arr & (1 << i)) != 0) {
+                cn1 ^= arr;
+            } else {
+                cn2 ^= arr;
+            }
+        }
+        num1[0] = cn1;
+        num2[0] = cn2;
+    }
 ```
 
