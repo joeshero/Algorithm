@@ -1536,3 +1536,133 @@ public void FindNumsAppearOnce(int[] array, int num1[], int num2[]) {
     }
 ```
 
+## 41. 和为S的连续正数序列
+
+**题目描述**
+
+ 小明很喜欢数学,有一天他在做数学作业时,要求计算出9~16的和,他马上就写出了正确答案是100。但是他并不满足于此,他在想究竟有多少种连续的正数序列的和为100(至少包括两个数)。没多久,他就得到另一组连续正数和为100的序列:18,19,20,21,22。现在把问题交给你,你能不能也很快的找出所有和为S的连续正数序列? Good Luck!
+
+```java
+//思路：滑动窗口
+public ArrayList<ArrayList<Integer>> FindContinuousSequence(int sum) {
+
+        ArrayList<ArrayList<Integer>> vals = new ArrayList<>();
+        int i = 1;
+        int j = 2;
+        while (j > i) {
+
+            int n = (i + j) * (j - i + 1) / 2;
+            if (n == sum) {
+                ArrayList<Integer> val = new ArrayList<>();
+                for (int k = i; k <= j; k++) {
+                    val.add(k);
+                }
+                vals.add(val);
+                i++;
+            } else if (n < sum) {
+                j++;
+            } else {
+                i++;
+            }
+        }
+        return vals;
+    }
+```
+
+
+
+## 42. 和为S的两个数字
+
+**题目描述**
+
+输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S，如果有多对数字的和等于S，输出两个数的乘积最小的。
+
+```java
+//思路：双指针找第一个就是乘积最小的
+public ArrayList<Integer> FindNumbersWithSum(int [] array,int sum) {
+        int i = 0;
+        int j = array.length - 1;
+        ArrayList<Integer> list = new ArrayList<>();
+        while(i < j){
+            int num = array[i] + array[j];
+            if(num == sum){
+                list.add(array[i]);
+                list.add(array[j]);
+                return list;
+            }else if(num < sum){
+                i++;
+            }else {
+                j--;
+            }
+        }
+        return list;
+    }
+```
+
+## 42. 左旋转字符串
+
+**题目描述**
+
+汇编语言中有一种移位指令叫做循环左移（ROL），现在有个简单的任务，就是用字符串模拟这个指令的运算结果。对于一个给定的字符序列S，请你把其循环左移K位后的序列输出。例如，字符序列S=”abcXYZdef”,要求输出循环左移3位后的结果，即“XYZdefabc”。是不是很简单？OK，搞定它
+
+```java
+public String LeftRotateString(String str, int n) {
+
+        char[] ch = str.toCharArray();
+        int i = 0;
+        int j = n - 1;
+        while (i < j) {
+            swap(ch, i, j);
+            i++;
+            j--;
+        }
+        i = n;
+        j = ch.length - 1;
+        while (i < j) {
+            swap(ch, i, j);
+            i++;
+            j--;
+        }
+        i = 0;
+        j = ch.length - 1;
+        while (i < j) {
+            swap(ch, i, j);
+            i++;
+            j--;
+        }
+        str = String.valueOf(ch);
+        return str;
+
+    }
+
+    private void swap(char[] arr, int i, int j) {
+        char temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+```
+
+## 43. 翻转单词顺序列
+
+**题目描述**
+
+ 牛客最近来了一个新员工Fish，每天早晨总是会拿着一本英文杂志，写些句子在本子上。同事Cat对Fish写的内容颇感兴趣，有一天他向Fish借来翻看，但却读不懂它的意思。例如，“student. a am I”。后来才意识到，这家伙原来把句子单词的顺序翻转了，正确的句子应该是“I am a student.”。Cat对一一的翻转这些单词顺序可不在行，你能帮助他么？
+
+```java
+public String ReverseSentence(String str) {
+
+        if (str == null || str.trim().equals("")) {
+            return str;
+        }
+        String[] words = str.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (int i = words.length - 1; i >= 0; i--) {
+            sb.append(words[i]);
+            if (i != 0) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+```
+
