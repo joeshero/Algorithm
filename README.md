@@ -1757,3 +1757,38 @@ public int Add(int num1,int num2) {
     }
 ```
 
+## 49. 把字符串转换为整数
+
+**题目描述**
+
+将一个字符串转换成一个整数(实现Integer.valueOf(string)的功能，但是string不符合数字要求时返回0)，要求不能使用字符串转换整数的库函数。数值为0或者字符串不是一个合法的数值则返回0。
+
+```java
+public int StrToInt(String str) {
+        char[] ch = str.toCharArray();
+        int num = 0;
+        int pow = 1;
+        boolean tag = false;//判断正负
+        for (int i = ch.length - 1; i >= 0; i--) {
+            if (i == 0) {
+                if (ch[i] == '-') {
+                    tag = true;
+                    continue;
+                } else if (ch[i] == '+') {
+                    continue;
+                }
+            }
+            if (ch[i] >= '0' && ch[i] <= '9') {
+                num += Math.pow(10, pow - 1) * (ch[i] - '0');
+                pow++;
+            } else {
+                return 0;
+            }
+        }
+        if (tag) {
+            num = -num;
+        }
+        return num;
+    }
+```
+
