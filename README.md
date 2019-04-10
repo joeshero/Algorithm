@@ -1599,7 +1599,7 @@ public ArrayList<Integer> FindNumbersWithSum(int [] array,int sum) {
     }
 ```
 
-## 42. 左旋转字符串
+## 43. 左旋转字符串
 
 **题目描述**
 
@@ -1642,7 +1642,7 @@ public String LeftRotateString(String str, int n) {
     }
 ```
 
-## 43. 翻转单词顺序列
+## 44. 翻转单词顺序列
 
 **题目描述**
 
@@ -1666,3 +1666,82 @@ public String ReverseSentence(String str) {
     }
 ```
 
+## 45. 扑克牌顺子
+
+**题目描述**
+
+LL今天心情特别好,因为他去买了一副扑克牌,发现里面居然有2个大王,2个小王(一副牌原本是54张^_^)...他随机从中抽出了5张牌,想测测自己的手气,看看能不能抽到顺子,如果抽到的话,他决定去买体育彩票,嘿嘿！！“红心A,黑桃3,小王,大王,方片5”,“Oh  My God!”不是顺子.....LL不高兴了,他想了想,决定大\小  王可以看成任何数字,并且A看作1,J为11,Q为12,K为13。上面的5张牌就可以变成“1,2,3,4,5”(大小王分别看作2和4),“So  Lucky!”。LL决定去买体育彩票啦。 现在,要求你使用这幅牌模拟上面的过程,然后告诉我们LL的运气如何，  如果牌能组成顺子就输出true，否则就输出false。为了方便起见,你可以认为大小王是0。
+
+```java
+public boolean isContinuous(int[] numbers) {
+        if (numbers == null || numbers.length < 5) {
+            return false;
+        }
+        int[] arr = new int[14];
+        arr[0] = -5;
+        int min = 14;
+        int max = -1;
+        for (int i = 0; i < numbers.length; i++) {
+            arr[numbers[i]]++;
+            //排除0的干扰
+            if (numbers[i] == 0) {
+                continue;
+            }
+            //同一张牌出现多次，返回false
+            if (arr[numbers[i]] > 1) {
+                return false;
+            }
+            min = Math.min(min, numbers[i]);
+            max = Math.max(max, numbers[i]);
+
+        }
+        return max - min < 5;
+    }
+```
+
+## 46. 孩子们的游戏
+
+**题目描述**
+
+每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。HF作为牛客的资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。然后,他随机指定一个数m,让编号为0的小朋友开始报数。每次喊到m-1的那个小朋友要出列唱首歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,从他的下一个小朋友开始,继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵的“名侦探柯南”典藏版(名额有限哦!!^_^)。请你试着想下,哪个小朋友会得到这份礼品呢？(注：小朋友的编号是从0到n-1)
+
+```java
+public int LastRemaining_Solution(int n, int m) {
+        int[] people = new int[n];
+        int count = n;
+        int i = -1, step = 0;
+        //循环n次
+        while (count > 0) {
+            i++;//指向删除元素的下一个元素
+            if (i >= n) i = 0;//模拟环
+            if (people[i] == -1) continue;//跳过-1元素
+            step++;//步数++
+            if (step == m) {
+                people[i] = -1;
+                step = 0;
+                count--;
+            }
+        }
+        return i;
+    }
+```
+
+## 47. 求1+2+...+n
+
+**题目描述**
+
+求1+2+3+...+n，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+
+```java
+public int Sum_Solution(int n) {
+        int sum = 0;
+        boolean tag = (n > 0) && ((sum += Sum_Solution(n - 1) + n) >= 0);
+        return sum;
+    }
+```
+
+## 48. 不用加减乘除做加法
+
+**题目描述**
+
+写一个函数，求两个整数之和，要求在函数体内不得使用+、-、*、/四则运算符号。
